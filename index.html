@@ -52,9 +52,7 @@ h1{
   width:calc(var(--bw) + 28px); padding:0 14px; min-height:26px; display:flex; flex-wrap:wrap; align-items:center; gap:0 1px;
   font-family:"Segoe UI Symbol","Noto Sans Symbols 2","DejaVu Sans","Apple Symbols",serif; font-size:20px; line-height:1;
 }
-.tray .w{color:#f6efdc; -webkit-text-stroke:1px #2a2118}
-.tray .b{color:#1d1a1a; -webkit-text-stroke:.6px #cfd6dc}
-.tray.dark-bg .w{filter:none}
+.tray svg{width:24px; height:24px; display:block; margin-right:-4px; filter:drop-shadow(0 1px 1px rgba(0,0,0,.45))}
 #boardwrap{
   position:relative; padding:14px; border-radius:5px;
   background:
@@ -81,14 +79,13 @@ h1{
 #pieces,#fx{position:absolute; inset:0; pointer-events:none}
 #fx{z-index:100; overflow:visible}
 .piece{position:absolute; width:12.5%; height:12.5%; display:grid; place-items:center; transform-origin:50% 85%; will-change:transform}
-.piece span{
-  display:block; font-size:calc(var(--bw)/8*.84); line-height:1;
-  font-family:"Segoe UI Symbol","Noto Sans Symbols 2","DejaVu Sans","Apple Symbols",serif;
-  animation:bob 3.4s ease-in-out infinite;
-}
-.piece.w span{color:#f6efdc; -webkit-text-stroke:1.4px #2a2118; filter:drop-shadow(0 3px 2px rgba(0,0,0,.45))}
-.piece.b span{color:#1d1a1a; -webkit-text-stroke:1px #cfd6dc; filter:drop-shadow(0 3px 2px rgba(0,0,0,.5))}
-@keyframes bob{50%{transform:translateY(-3%)}}
+.piece span{display:block; width:88%; height:88%; animation:bob 4s ease-in-out infinite; filter:drop-shadow(0 4px 3px rgba(0,0,0,.55))}
+.piece span svg{display:block; width:100%; height:100%; overflow:visible}
+.piece.b[data-t="n"] span svg{transform:scaleX(-1)}
+@keyframes bob{50%{transform:translateY(-1.5%)}}
+.wep{position:absolute; left:50%; top:58%; width:92%; aspect-ratio:100/16; transform-origin:0 50%; pointer-events:none; opacity:0; z-index:3; filter:drop-shadow(0 2px 2px rgba(0,0,0,.5))}
+.wep svg{display:block; width:100%; height:100%; overflow:visible}
+.dust{position:absolute; width:30px; height:30px; margin:-15px 0 0 -15px; border-radius:50%; background:radial-gradient(circle,rgba(205,212,222,.85),rgba(205,212,222,0) 70%)}
 .spark{position:absolute; width:7px; height:7px; margin:-3px 0 0 -3px; border-radius:50%}
 .slash{position:absolute; width:12.5%; height:4px; margin-top:-2px; border-radius:2px;
   background:linear-gradient(90deg,transparent,#fff 30%,#fff 70%,transparent); box-shadow:0 0 8px 2px rgba(255,90,60,.9)}
@@ -107,23 +104,35 @@ button[aria-pressed="true"]{border-color:var(--brass); box-shadow:inset 0 0 0 1p
 .seg button:last-child{border-radius:0 4px 4px 0}
 .seg button+button{border-left-width:0}
 [hidden]{display:none!important}
-.copy{margin:6px 0 0; font-size:.72rem; color:var(--muted); text-align:center}
-.hint{margin:0; color:var(--muted); font-size:.95rem; text-align:center; max-width:calc(var(--bw) + 28px)}
+.copy{margin:6px 0 0; font-size:.72rem; color:var(--ink); opacity:.8; text-shadow:0 1px 2px var(--bg); text-align:center}
+.hint{margin:0; color:var(--ink); text-shadow:0 1px 2px var(--bg); font-size:.95rem; text-align:center; max-width:calc(var(--bw) + 28px)}
 .promo{position:absolute; inset:0; display:grid; place-items:center; background:rgba(10,14,18,.6); z-index:200; border-radius:8px}
 .promo[hidden]{display:none}
 .promo-box{background:var(--panel); border:1px solid var(--brass); border-radius:8px; padding:12px 14px; text-align:center}
 .promo-box p{margin:0 0 8px; font-weight:700}
 .promo-box .row{display:flex; gap:8px}
-.promo-box button{
-  font-family:"Segoe UI Symbol","Noto Sans Symbols 2","DejaVu Sans","Apple Symbols",serif;
-  font-size:32px; line-height:1; padding:6px 10px; min-width:52px; min-height:52px;
-}
-.promo-box button.w{color:#f6efdc; -webkit-text-stroke:1px #2a2118; background:#8a8f93}
-.promo-box button.b{color:#1d1a1a; -webkit-text-stroke:.6px #cfd6dc; background:#8a8f93}
+.promo-box button{padding:4px; min-width:58px; min-height:58px}
+.promo-box button svg{width:48px; height:48px; display:block}
 @media (prefers-reduced-motion: reduce){ .piece span{animation:none} }
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<defs>
+<linearGradient id="gW" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fffef8"/><stop offset=".32" stop-color="#ece4cf"/><stop offset=".7" stop-color="#c0b595"/><stop offset="1" stop-color="#8b8165"/></linearGradient>
+<linearGradient id="gB" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6c727b"/><stop offset=".3" stop-color="#363a42"/><stop offset=".7" stop-color="#16181c"/><stop offset="1" stop-color="#07080a"/></linearGradient>
+<linearGradient id="gShW" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".2" stop-color="#fff" stop-opacity=".7"/><stop offset=".42" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="gShB" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".2" stop-color="#fff" stop-opacity=".34"/><stop offset=".42" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="gSt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5f8fb"/><stop offset=".5" stop-color="#b2bec9"/><stop offset="1" stop-color="#6f7c89"/></linearGradient>
+<linearGradient id="gBr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3d98a"/><stop offset="1" stop-color="#a97a22"/></linearGradient>
+<g id="s-p"><path d="M20 90 C20 84 26 81 32 80 H68 C74 81 80 84 80 90 Z"/><rect x="28" y="73" width="44" height="8" rx="3.5"/><path d="M39 75 C43 66 45 58 45 52 H55 C55 58 57 66 61 75 Z"/><ellipse cx="50" cy="51" rx="13" ry="4.5"/><circle cx="50" cy="38" r="12"/></g>
+<g id="s-r"><path d="M20 90 C20 84 26 81 32 80 H68 C74 81 80 84 80 90 Z"/><rect x="28" y="73" width="44" height="8" rx="3.5"/><path d="M33 75 L36 38 H64 L67 75 Z"/><rect x="30" y="34" width="40" height="6" rx="2"/><path d="M31 34 V16 H40 V23 H45.5 V16 H54.5 V23 H60 V16 H69 V34 Z"/></g>
+<g id="s-b"><path d="M20 90 C20 84 26 81 32 80 H68 C74 81 80 84 80 90 Z"/><rect x="28" y="73" width="44" height="8" rx="3.5"/><path d="M38 75 C42 66 44 58 44 46 H56 C56 58 58 66 62 75 Z"/><ellipse cx="50" cy="45" rx="14" ry="4.5"/><path d="M50 14 C63 24 66 36 58 43 H42 C34 36 37 24 50 14 Z"/><circle cx="50" cy="12" r="4.5"/></g>
+<g id="s-q"><path d="M20 90 C20 84 26 81 32 80 H68 C74 81 80 84 80 90 Z"/><rect x="28" y="73" width="44" height="8" rx="3.5"/><path d="M36 75 C40 62 42 50 39 34 H61 C58 50 60 62 64 75 Z"/><ellipse cx="50" cy="33" rx="14" ry="4.5"/><path d="M35 33 L29 14 L40 24 L45 10 L50 24 L55 10 L60 24 L71 14 L65 33 Z"/><circle cx="29" cy="13" r="3.4"/><circle cx="45" cy="9" r="3.4"/><circle cx="55" cy="9" r="3.4"/><circle cx="71" cy="13" r="3.4"/></g>
+<g id="s-k"><path d="M20 90 C20 84 26 81 32 80 H68 C74 81 80 84 80 90 Z"/><rect x="28" y="73" width="44" height="8" rx="3.5"/><path d="M36 75 C40 62 42 50 39 34 H61 C58 50 60 62 64 75 Z"/><ellipse cx="50" cy="33" rx="14" ry="4.5"/><path d="M36 33 C34 24 38 19 50 19 C62 19 66 24 64 33 Z"/><rect x="46.5" y="3" width="7" height="17" rx="1.5"/><rect x="41" y="8" width="18" height="6.5" rx="1.5"/></g>
+<g id="s-n"><path d="M20 90 C20 84 26 81 32 80 H68 C74 81 80 84 80 90 Z"/><rect x="28" y="73" width="44" height="8" rx="3.5"/><path d="M68 76 C70 60 68 44 60 34 C56 28 54 22 52 16 L45 22 C40 21 36 24 30 32 C26 38 20 42 22 47 C24 51 30 51 36 47 L42 44 C40 52 34 60 32 76 Z"/></g>
+</defs>
+</svg>
 <main class="app">
   <h1><span aria-hidden="true">⚜</span> Brawl Chess <span aria-hidden="true">⚜</span></h1>
   <p class="status" id="status" role="status" aria-live="polite"></p>
@@ -350,6 +359,7 @@ const snd = {
   move: () => tone(320, 190, .08, 'triangle', .15),
   hit:  () => { tone(190, 55, .16, 'sine', .35); noise(.09, .22); },
   kill: () => { tone(140, 30, .55, 'sawtooth', .22); noise(.35, .3); },
+  clang:() => { tone(1500, 950, .14, 'square', .07); tone(2300, 1600, .1, 'triangle', .06); noise(.05, .12); },
   check:() => { tone(660, 660, .1, 'square', .08); tone(880, 880, .14, 'square', .08, .12); },
   end:  () => { tone(440, 110, .9, 'triangle', .25); }
 };
@@ -374,12 +384,21 @@ let els = Array(64).fill(null);
 let sel = -1, targets = [], busy = false, mode = 'ai', fights = !RM;
 
 const place = (e, sq) => { e.style.left = (sq & 7) * 12.5 + '%'; e.style.top = (sq >> 3) * 12.5 + '%'; };
+const DET = {
+  b: c => `<path d="M53 21 L44 36" stroke="${c === 'w' ? 'rgba(40,30,20,.75)' : 'rgba(215,225,235,.6)'}" stroke-width="2.6" stroke-linecap="round" fill="none"/>`,
+  n: c => { const d = c === 'w' ? '#2a2118' : '#e6edf3', m = c === 'w' ? 'rgba(60,45,30,.55)' : 'rgba(220,230,240,.4)';
+    return `<circle cx="45" cy="29.5" r="2.3" fill="${d}"/><ellipse cx="24.5" cy="44" rx="1.8" ry="1.2" fill="${d}"/><path d="M52 18 C61 26 65 35 63 45 C61 55 63 64 65 72" fill="none" stroke="${m}" stroke-width="3" stroke-linecap="round"/>`; }
+};
+function svgPiece(code){
+  const c = code[0], t = code[1];
+  return `<svg viewBox="0 0 100 100" aria-hidden="true"><use href="#s-${t}" fill="url(#${c === 'w' ? 'gW' : 'gB'})" stroke="${c === 'w' ? '#2a2118' : '#000'}" stroke-width="1.5" stroke-linejoin="round"/><use href="#s-${t}" fill="url(#${c === 'w' ? 'gShW' : 'gShB'})"/>${DET[t] ? DET[t](c) : ''}</svg>`;
+}
 function mkPiece(code, sq){
   const e = document.createElement('div');
-  e.className = 'piece ' + code[0];
+  e.className = 'piece ' + code[0]; e.dataset.t = code[1];
   const g = document.createElement('span');
-  g.textContent = GLYPH[code[1]] + '\uFE0E';
-  g.style.animationDelay = (-Math.random() * 3.4).toFixed(2) + 's';
+  g.innerHTML = svgPiece(code);
+  g.style.animationDelay = (-Math.random() * 4).toFixed(2) + 's';
   e.appendChild(g); place(e, sq); pieceLayer.appendChild(e);
   return e;
 }
@@ -391,8 +410,7 @@ function renderAll(){
 function renderCaptured(){
   const start = {p:8, n:2, b:2, r:2, q:1}, cnt = {w:{}, b:{}};
   G.s.b.forEach(p => { if (p) cnt[p[0]][p[1]] = (cnt[p[0]][p[1]] || 0) + 1; });
-  const lost = c => 'qrbnp'.split('').map(t =>
-    `<span class="${c}">${(GLYPH[t] + '\uFE0E').repeat(Math.max(0, start[t] - (cnt[c][t] || 0)))}</span>`).join('');
+  const lost = c => 'qrbnp'.split('').map(t => svgPiece(c + t).repeat(Math.max(0, start[t] - (cnt[c][t] || 0)))).join('');
   $('#trayTop').innerHTML = lost('w');
   $('#trayBot').innerHTML = lost('b');
 }
@@ -415,11 +433,11 @@ function setStatus(text, turn){
 /* ---------- effects ---------- */
 const tf = (x, y, r = 0, sx = 1, sy = sx) => `translate(${x*100}%,${y*100}%) rotate(${r}deg) scale(${sx},${sy})`;
 const center = sq => [((sq & 7) + .5) * 12.5, ((sq >> 3) + .5) * 12.5];
-function burst(sq, n, colors, spread){
-  const [cx, cy] = center(sq), px = board.clientWidth / 8;
+function burstP(cx, cy, n, colors, spread){
+  const px = board.clientWidth / 8;
   for (let i = 0; i < n; i++){
     const p = document.createElement('i'); p.className = 'spark';
-    p.style.left = cx + '%'; p.style.top = cy + '%';
+    p.style.left = (cx + .5) * 12.5 + '%'; p.style.top = (cy + .5) * 12.5 + '%';
     p.style.background = colors[Math.floor(Math.random() * colors.length)];
     fxLayer.appendChild(p);
     const a = Math.random() * 6.283, d = (.35 + Math.random() * .9) * spread * px;
@@ -428,6 +446,20 @@ function burst(sq, n, colors, spread){
       {transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d + px*.4}px) scale(.1)`, opacity:0}
     ], {duration:450 + Math.random() * 450, easing:'cubic-bezier(.1,.7,.4,1)'});
     a1.onfinish = () => p.remove();
+  }
+}
+const burst = (sq, n, colors, spread) => burstP(sq & 7, sq >> 3, n, colors, spread);
+function dustP(cx, cy, n){
+  const px = board.clientWidth / 8;
+  for (let i = 0; i < n; i++){
+    const d = document.createElement('i'); d.className = 'dust';
+    d.style.left = (cx + .5) * 12.5 + '%'; d.style.top = (cy + .85) * 12.5 + '%';
+    fxLayer.appendChild(d);
+    const a = d.animate([
+      {transform:'translate(0,0) scale(.5)', opacity:.85},
+      {transform:`translate(${(Math.random() - .5) * px * 1.3}px,${-px * (.15 + Math.random() * .3)}px) scale(${1.6 + Math.random()})`, opacity:0}
+    ], {duration:600 + Math.random() * 400, easing:'ease-out'});
+    a.onfinish = () => d.remove();
   }
 }
 function slash(sq, angle){
@@ -468,12 +500,12 @@ function shake(p){
   ], {duration:230});
 }
 function hit(vic, vsq, ux, uy, power, type, flip){
-  const sp = vic.firstChild;
+  const sp = vic.firstChild, base = 'drop-shadow(0 4px 3px rgba(0,0,0,.55))';
   sp.animate([
-    {transform:'translate(0,0) rotate(0deg)', filter:'none'},
+    {transform:'translate(0,0) rotate(0deg)', filter:base},
     {transform:`translate(${ux*20*power}%,${uy*20*power}%) rotate(${(flip ? -1 : 1) * 11 * power}deg)`,
      filter:'sepia(1) saturate(9) hue-rotate(-35deg) brightness(1.25)', offset:.3},
-    {transform:'translate(0,0) rotate(0deg)', filter:'none'}
+    {transform:'translate(0,0) rotate(0deg)', filter:base}
   ], {duration:260});
   burst(vsq, Math.round(7 * power), ['#ffd27a', '#fff', '#ff6a3d'], .6 * power);
   const ang = Math.atan2(uy, ux) * 180 / Math.PI;
@@ -481,6 +513,7 @@ function hit(vic, vsq, ux, uy, power, type, flip){
   else if (type === 'b') slash(vsq, flip ? 40 : -40);
   else if (type === 'q'){ slash(vsq, -45); slash(vsq, 45); }
   else ring(vsq, type === 'k' ? '#ff6a3d' : '#ffd27a');
+  if (type === 'n' || type === 'r' || type === 'k') dustP(vsq & 7, vsq >> 3, type === 'k' ? 8 : 5);
   snd.hit(); shake(power);
 }
 
@@ -496,77 +529,134 @@ async function slide(el, from, to, type){
   el.style.zIndex = 30;
   const frames = type === 'n'
     ? [{transform:tf(0,0)}, {transform:tf(dx/2, dy/2 - .5, 0, 1.25), offset:.5}, {transform:tf(dx,dy)}]
-    : [{transform:tf(0,0)}, {transform:tf(dx,dy)}];
+    : [{transform:tf(0,0)}, {transform:tf(dx/2, dy/2 - .07, 0, 1.06), offset:.5}, {transform:tf(dx,dy)}];
   await el.animate(frames, {duration:dur, easing:'ease-in-out', fill:'forwards'}).finished;
   commit(el, to);
 }
 
+/* weapons */
+const WEAP = {p:'spear', n:'sword', b:'mace', q:'sword', k:'sword'};
+const WSVG = {
+  sword: `<svg viewBox="0 0 100 16"><rect x="0" y="5.5" width="15" height="5" rx="2" fill="#5a3a22"/><rect x="13.5" y="1" width="4.5" height="14" rx="1.6" fill="url(#gBr)" stroke="#6b4a12" stroke-width=".5"/><path d="M18 5 H93 L100 8 L93 11 H18 Z" fill="url(#gSt)" stroke="#44505c" stroke-width=".6"/><path d="M19 8 H95" stroke="#fff" stroke-opacity=".75" stroke-width=".8"/></svg>`,
+  spear: `<svg viewBox="0 0 100 16"><rect x="0" y="6.4" width="80" height="3.2" rx="1.4" fill="#6b4524"/><rect x="72" y="5.4" width="4" height="5.2" rx="1" fill="url(#gBr)"/><path d="M76 2 L100 8 L76 14 Q80 8 76 2 Z" fill="url(#gSt)" stroke="#44505c" stroke-width=".6"/></svg>`,
+  mace: `<svg viewBox="0 0 100 16"><rect x="0" y="6.4" width="72" height="3.2" rx="1.4" fill="#6b4524"/><circle cx="82" cy="8" r="7.2" fill="url(#gSt)" stroke="#44505c" stroke-width=".7"/><path d="M82 -1 L84.4 2.2 H79.6 Z M82 17 L84.4 13.8 H79.6 Z M93 8 L89.6 10.4 V5.6 Z M71 8 L74.4 5.6 V10.4 Z" fill="#7d8996"/></svg>`
+};
+function mkWeapon(host, kind, scale){
+  const w = document.createElement('div'); w.className = 'wep'; w.innerHTML = WSVG[kind];
+  const ww = 92 * scale; w.style.width = ww + '%'; w.style.marginTop = (-ww * .08) + '%';
+  host.appendChild(w); return w;
+}
+const wset = (w, a) => { if (w){ w._r = a; w.style.transform = `rotate(${a}deg)`; } };
+const wr = (w, to, dur, ease) => {
+  if (!w) return Promise.resolve();
+  const from = w._r || 0; w._r = to;
+  return w.animate([{transform:`rotate(${from}deg)`}, {transform:`rotate(${to}deg)`}], {duration:dur, easing:ease || 'ease-out', fill:'forwards'}).finished;
+};
+
 async function fight(att, vic, type, from, vsq, to, vcode){
   const fx0 = from & 7, fy0 = from >> 3, vx = vsq & 7, vy = vsq >> 3, tx = to & 7, ty = to >> 3;
   const dx = vx - fx0, dy = vy - fy0, dist = Math.hypot(dx, dy), ux = dx / dist, uy = dy / dist;
-  const face = ux < 0 ? -1 : 1;
+  const ang = Math.atan2(uy, ux) * 180 / Math.PI, vt = vcode[1];
   att.style.zIndex = 60; vic.style.zIndex = 50;
   const A = (el, frames, dur, ease) => el.animate(frames, {duration:dur, easing:ease || 'ease-out', fill:'forwards'}).finished;
   let cur = {x:0, y:0, r:0, s:1};
   const mv = async (x, y, r, s, dur, ease) => {
-    const from = tf(cur.x, cur.y, cur.r, cur.s);
+    const f = tf(cur.x, cur.y, cur.r, cur.s);
     cur = {x, y, r, s};
-    await A(att, [{transform:from}, {transform:tf(x, y, r, s)}], dur, ease);
+    await A(att, [{transform:f}, {transform:tf(x, y, r, s)}], dur, ease);
   };
   const near = k => [dx - ux * k, dy - uy * k];
   const [sx, sy] = near(.95);
-  const lunge = (k, rot, s, dur) => { const [px, py] = near(k); return mv(px, py, rot * face, s, dur, 'ease-in'); };
+  const lunge = (k, s, dur) => { const [px, py] = near(k); return mv(px, py, 0, s, dur, 'ease-in'); };
   const back = dur => mv(sx, sy, 0, 1, dur || 220, 'ease-out');
   let vcur = tf(0, 0, 0, 1);
 
+  const aW = WEAP[type] ? mkWeapon(att, WEAP[type], type === 'k' ? 1.2 : 1) : null;
+  const vW = WEAP[vt] ? mkWeapon(vic, WEAP[vt], vt === 'k' ? 1.2 : 1) : null;
+  wset(aW, ang - 75); wset(vW, ang + 245);
+  const show = w => { if (w) w.animate([{opacity:0}, {opacity:1}], {duration:220, fill:'forwards'}); };
+  const hide = w => { if (w) w.animate([{opacity:1}, {opacity:0}], {duration:200, fill:'forwards'}); };
+  show(aW); show(vW);
+
+  const clash = async () => {
+    if (!aW && !vW) return;
+    await Promise.all([wr(aW, ang - 6, 110, 'ease-in'), wr(vW, ang + 186, 110, 'ease-in')]);
+    burstP(fx0 + (sx + dx) / 2, fy0 + (sy + dy) / 2, 12, ['#fff', '#ffe29a', '#9fd0ff'], .55);
+    snd.clang(); shake(.5);
+    await Promise.all([wr(aW, ang - 35, 160), wr(vW, ang + 270, 220)]);
+    hide(vW);
+  };
+
+  const heavy = type === 'k' || type === 'q';
   const kill = () => {
     hit(vic, vsq, ux, uy, 1.6, type, 0);
     const col = vcode[0] === 'w' ? ['#f6efdc', '#cdbf9a', '#fff'] : ['#1d1a1a', '#6b7782', '#ff6a3d'];
     burst(vsq, 20, col.concat(['#ffd27a']), 1.3);
-    skull(vsq); snd.kill();
+    skull(vsq); snd.kill(); hide(vW);
+    if (heavy){
+      return A(vic, [
+        {transform:vcur, opacity:1},
+        {transform:tf(ux*.5, uy*.5 - .8, 180 * (ux < 0 ? -1 : 1), 1.1), opacity:1, offset:.3},
+        {transform:tf(ux*2.3, uy*2.3 + .3, 560 * (ux < 0 ? -1 : 1), .35), opacity:0}
+      ], 780, 'ease-out');
+    }
+    const fd = ux < -.2 ? -1 : 1;
+    setTimeout(() => dustP(vx + ux * .7, vy + uy * .7, 6), 420);
     return A(vic, [
       {transform:vcur, opacity:1},
-      {transform:tf(ux*.5, uy*.5 - .8, 180 * face, 1.1), opacity:1, offset:.3},
-      {transform:tf(ux*2.3, uy*2.3 + .3, 560 * face, .35), opacity:0}
-    ], 780, 'ease-out');
+      {transform:tf(ux*.35, uy*.35 - .25, 35 * fd, 1.05), opacity:1, offset:.25},
+      {transform:tf(ux*.7, uy*.7, 92 * fd, 1), opacity:1, offset:.5},
+      {transform:tf(ux*.78, uy*.78 - .12, 84 * fd, 1), opacity:1, offset:.62},
+      {transform:tf(ux*.8, uy*.8, 92 * fd, 1), opacity:1, offset:.76},
+      {transform:tf(ux*.8, uy*.8, 92 * fd, 1), opacity:0}
+    ], 1000, 'ease-out');
   };
   const finish = async () => {
     const killing = kill();
     await sleep(190);
+    wr(aW, -80, 260);
     await mv(tx - fx0, ty - fy0, 0, 1, 260, 'ease-in-out');
     await A(att, [{transform:tf(tx-fx0, ty-fy0, 0, 1)}, {transform:tf(tx-fx0, ty-fy0, 0, 1.2)}, {transform:tf(tx-fx0, ty-fy0, 0, 1)}], 220);
     await killing;
   };
 
   if (type === 'n'){
-    // leap onto the victim and stomp
-    await A(att, [
-      {transform:tf(0,0,0,1)},
-      {transform:tf(dx*.5, dy*.5 - 1.2, -25 * face, 1.4), offset:.5},
-      {transform:tf(dx, dy, 0, .92)}
-    ], 460, 'ease-in');
+    // leap onto the victim with the sword raised, then stomp and chop
+    await Promise.all([
+      wr(aW, ang - 105, 220),
+      A(att, [
+        {transform:tf(0,0,0,1)},
+        {transform:tf(dx*.5, dy*.5 - 1.2, -25 * (ux < 0 ? -1 : 1), 1.4), offset:.5},
+        {transform:tf(dx, dy, 0, .92)}
+      ], 460, 'ease-in')
+    ]);
     cur = {x:dx, y:dy, r:0, s:.92};
     vcur = tf(0, .07, 0, 1.45, .3);
     vic.animate([{transform:tf(0,0,0,1)}, {transform:vcur}], {duration:110, fill:'forwards'});
+    hide(vW);
+    await wr(aW, ang + 15, 90, 'ease-in');
     hit(vic, vsq, ux, uy, 1, 'n', 0);
-    await sleep(170);
-    await mv(dx, dy - .55, 0, 1.15, 230, 'ease-out');
-    await mv(dx, dy, 0, .92, 110, 'ease-in');
+    await sleep(140);
+    await Promise.all([mv(dx, dy - .55, 0, 1.15, 230, 'ease-out'), wr(aW, ang - 105, 230)]);
+    await Promise.all([mv(dx, dy, 0, .92, 110, 'ease-in'), wr(aW, ang + 15, 110, 'ease-in')]);
     await finish();
   } else {
     await mv(sx, sy, 0, 1, 280, 'ease-in-out');
+    await clash();
     if (type === 'p'){
       for (let i = 0; i < 2; i++){
-        await lunge(.4, i ? -10 : 10, 1.1, 110);
+        await Promise.all([lunge(.4, 1.08, 110), wr(aW, ang, 110, 'ease-in')]);
         hit(vic, vsq, ux, uy, .7, 'p', i);
-        await back(170);
+        await Promise.all([back(170), wr(aW, ang - 18, 170)]);
       }
-      await lunge(.3, 16, 1.18, 100);
+      await Promise.all([lunge(.3, 1.15, 100), wr(aW, ang + 2, 100, 'ease-in')]);
     } else if (type === 'b'){
-      await lunge(.55, -35, 1.12, 120);
-      hit(vic, vsq, ux, uy, .9, 'b', 0);
-      await back(190);
-      await lunge(.4, 35, 1.15, 110);
+      for (let i = 0; i < 2; i++){
+        await wr(aW, ang - 115, 200);
+        const last = i === 1;
+        await Promise.all([wr(aW, ang + 12, 120, 'ease-in'), lunge(last ? .35 : .5, 1.12, 120)]);
+        if (!last){ hit(vic, vsq, ux, uy, .9, 'b', i); await back(190); }
+      }
     } else if (type === 'r'){
       await mv(sx - ux*.45, sy - uy*.45, 0, .95, 210, 'ease-out');
       const [n1x, n1y] = near(.5);
@@ -577,26 +667,27 @@ async function fight(att, vic, type, from, vsq, to, vcode){
       const [n2x, n2y] = near(.4);
       await mv(n2x, n2y, 0, 1.15, 80, 'ease-in');
     } else if (type === 'q'){
+      await wr(aW, ang, 120);
       const [px, py] = near(.55);
       const spin = A(att, [
         {transform:tf(sx, sy, 0, 1)},
-        {transform:tf(px, py, 360, 1.15), offset:.5},
+        {transform:tf(px, py, 360, 1.12), offset:.5},
         {transform:tf(sx, sy, 720, 1.05)}
-      ], 660, 'ease-in-out');
-      setTimeout(() => hit(vic, vsq, ux, uy, .9, 'q', 0), 270);
-      setTimeout(() => hit(vic, vsq, ux, uy, 1, 'q', 1), 400);
+      ], 700, 'ease-in-out');
+      setTimeout(() => hit(vic, vsq, ux, uy, .9, 'q', 0), 330);
       await spin;
       cur = {x:sx, y:sy, r:0, s:1.05};
-      await lunge(.35, 20, 1.2, 100);
-    } else { // king: rise and slam
-      await mv(sx, sy - .5, 0, 1.45, 380, 'ease-out');
+      await lunge(.35, 1.2, 100);
+    } else { // king: raise the sword and slam down
+      await Promise.all([mv(sx, sy - .5, 0, 1.45, 380, 'ease-out'), wr(aW, ang - 105, 380)]);
       await sleep(90);
       const [px, py] = near(.45);
-      await mv(px, py, 0, 1.2, 100, 'ease-in');
+      await Promise.all([mv(px, py, 0, 1.2, 100, 'ease-in'), wr(aW, ang + 12, 100, 'ease-in')]);
     }
     await finish();
   }
   commit(att, to);
+  if (aW) aW.remove();
   vic.remove();
 }
 
@@ -628,7 +719,7 @@ async function animateMove(m, p, vsq, vcode){
     await Promise.all(jobs);
   }
   if (m.promo){
-    att.firstChild.textContent = GLYPH[m.promo] + '\uFE0E';
+    att.firstChild.innerHTML = svgPiece(p[0] + m.promo); att.dataset.t = m.promo;
     ring(m.to, '#e0a93c'); burst(m.to, 12, ['#e0a93c', '#fff'], 1);
     att.animate([{transform:tf(0,0,0,.6)}, {transform:tf(0,0,0,1.3)}, {transform:tf(0,0,0,1)}], {duration:380});
   }
@@ -692,7 +783,7 @@ function askPromo(ms){
   const col = G.s.turn;
   for (const t of 'qrbn'){
     const b = document.createElement('button');
-    b.className = col; b.textContent = GLYPH[t] + '\uFE0E';
+    b.className = col; b.innerHTML = svgPiece(col + t);
     b.setAttribute('aria-label', {q:'Queen', r:'Rook', b:'Bishop', n:'Knight'}[t]);
     b.onclick = () => { $('#promo').hidden = true; play(ms.find(m => m.promo === t)); };
     row.appendChild(b);
