@@ -6,7 +6,7 @@
 <title>Brawl Chess</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Alegreya:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#dfe5ec; --panel:#eef1f5; --ink:#18222c; --muted:#5a6776; --line:#b0bcc9;
@@ -28,35 +28,48 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{
-  background:var(--bg); color:var(--ink);
-  font-family:"Alegreya Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='88'%3E%3Cpath d='M0 0H96M0 44H96M0 88H96M48 0V44M0 44V88M96 44V88' stroke='black' stroke-opacity='.14' stroke-width='2' fill='none'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 50% 25%, transparent 35%, rgba(0,0,0,.28) 100%),
+    var(--bg);
+  background-attachment:fixed;
+  color:var(--ink);
+  font-family:"Alegreya",Georgia,"Times New Roman",serif;
   font-size:17px; line-height:1.4;
   min-height:100vh; display:flex; justify-content:center;
   touch-action:manipulation;
 }
-.app{width:100%; max-width:680px; padding:14px 12px 22px; display:flex; flex-direction:column; align-items:center; gap:10px}
+.app{--bw:max(250px,min(calc(100vw - 56px),calc(100svh - 340px),620px)); width:100%; max-width:680px; padding:14px 12px 22px; display:flex; flex-direction:column; align-items:center; gap:10px}
 h1{
-  margin:0; font-family:"IM Fell English SC",Georgia,"Times New Roman",serif;
-  font-weight:400; font-size:2rem; letter-spacing:.02em; line-height:1.1;
+  margin:0; font-family:"MedievalSharp",Georgia,serif;
+  font-weight:400; font-size:2.1rem; letter-spacing:.03em; line-height:1.1; text-align:center;
+  text-shadow:0 2px 0 rgba(0,0,0,.25);
 }
-.status{margin:0; min-height:1.5em; font-weight:700; display:flex; align-items:center; gap:8px}
+.status{margin:0; min-height:2.1em; padding:3px 18px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--panel); border-top:2px double var(--line); border-bottom:2px double var(--line); box-shadow:0 2px 6px rgba(0,0,0,.2)}
 .status i{width:12px; height:12px; border-radius:50%; border:2px solid var(--ink); display:inline-block}
 .status i.w{background:#f6efdc} .status i.b{background:#1d1a1a}
 .tray{
-  width:var(--bw,320px); min-height:26px; display:flex; flex-wrap:wrap; align-items:center; gap:0 1px;
+  width:calc(var(--bw) + 28px); padding:0 14px; min-height:26px; display:flex; flex-wrap:wrap; align-items:center; gap:0 1px;
   font-family:"Segoe UI Symbol","Noto Sans Symbols 2","DejaVu Sans","Apple Symbols",serif; font-size:20px; line-height:1;
 }
 .tray .w{color:#f6efdc; -webkit-text-stroke:1px #2a2118}
 .tray .b{color:#1d1a1a; -webkit-text-stroke:.6px #cfd6dc}
 .tray.dark-bg .w{filter:none}
 #boardwrap{
-  --bw:max(250px,min(calc(100vw - 44px),calc(100svh - 330px),620px));
-  position:relative; padding:10px; background:var(--frame); border-radius:8px;
-  box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,255,255,.06);
+  position:relative; padding:14px; border-radius:5px;
+  background:
+    radial-gradient(circle at 7px 7px,#d3dbe4 0 2.5px,#56667a 3.5px 4.5px,transparent 5.5px) left top/14px 14px no-repeat,
+    radial-gradient(circle at 7px 7px,#d3dbe4 0 2.5px,#56667a 3.5px 4.5px,transparent 5.5px) right top/14px 14px no-repeat,
+    radial-gradient(circle at 7px 7px,#d3dbe4 0 2.5px,#56667a 3.5px 4.5px,transparent 5.5px) left bottom/14px 14px no-repeat,
+    radial-gradient(circle at 7px 7px,#d3dbe4 0 2.5px,#56667a 3.5px 4.5px,transparent 5.5px) right bottom/14px 14px no-repeat,
+    linear-gradient(150deg,#3a4959,#1a232d);
+  border:3px ridge #6c7d92;
+  box-shadow:0 12px 32px rgba(0,0,0,.45);
 }
 #board{position:relative; width:var(--bw); height:var(--bw); display:grid; grid-template-columns:repeat(8,1fr); grid-template-rows:repeat(8,1fr); user-select:none; -webkit-user-select:none; cursor:pointer}
 .sq{position:relative}
-.sq.l{background:var(--sq-l)} .sq.d{background:var(--sq-d)}
+.sq.l{background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(0,0,0,.07)),var(--sq-l)}
+.sq.d{background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(0,0,0,.18)),var(--sq-d)}
 .sq small{position:absolute; font-size:calc(var(--bw)/8*.2); font-weight:700; line-height:1; pointer-events:none}
 .sq.l small{color:var(--sq-d)} .sq.d small{color:var(--sq-l)}
 .sq small.rk{top:3px; left:3px} .sq small.fl{bottom:3px; right:4px}
@@ -81,19 +94,21 @@ h1{
   background:linear-gradient(90deg,transparent,#fff 30%,#fff 70%,transparent); box-shadow:0 0 8px 2px rgba(255,90,60,.9)}
 .ring{position:absolute; width:12.5%; height:12.5%; border-radius:50%; border:3px solid #ffd27a}
 .skull{position:absolute; width:12.5%; height:12.5%; display:grid; place-items:center; font-size:calc(var(--bw)/11)}
-.controls{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; max-width:var(--bw,320px)}
+.controls{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; max-width:calc(var(--bw) + 28px)}
 button{
-  font:inherit; font-weight:700; color:var(--ink); background:var(--panel);
-  border:1px solid var(--line); border-radius:6px; padding:8px 12px; min-height:42px; cursor:pointer;
+  font:inherit; font-family:"MedievalSharp",Georgia,serif; font-weight:400; font-size:.95rem; color:var(--ink); background:var(--panel);
+  border:2px solid var(--line); border-radius:4px; padding:8px 12px; min-height:42px; cursor:pointer;
 }
 button:hover{border-color:var(--brass)}
 button:focus-visible{outline:3px solid var(--brass); outline-offset:2px}
 button[aria-pressed="true"]{border-color:var(--brass); box-shadow:inset 0 0 0 1px var(--brass)}
 .seg{display:flex}
-.seg button:first-child{border-radius:6px 0 0 6px}
-.seg button:last-child{border-radius:0 6px 6px 0; border-left:0}
+.seg button:first-child{border-radius:4px 0 0 4px}
+.seg button:last-child{border-radius:0 4px 4px 0}
+.seg button+button{border-left-width:0}
+[hidden]{display:none!important}
 .copy{margin:6px 0 0; font-size:.72rem; color:var(--muted); text-align:center}
-.hint{margin:0; color:var(--muted); font-size:.95rem; text-align:center; max-width:var(--bw,320px)}
+.hint{margin:0; color:var(--muted); font-size:.95rem; text-align:center; max-width:calc(var(--bw) + 28px)}
 .promo{position:absolute; inset:0; display:grid; place-items:center; background:rgba(10,14,18,.6); z-index:200; border-radius:8px}
 .promo[hidden]{display:none}
 .promo-box{background:var(--panel); border:1px solid var(--brass); border-radius:8px; padding:12px 14px; text-align:center}
@@ -110,7 +125,7 @@ button[aria-pressed="true"]{border-color:var(--brass); box-shadow:inset 0 0 0 1p
 </head>
 <body>
 <main class="app">
-  <h1>Brawl Chess</h1>
+  <h1><span aria-hidden="true">⚜</span> Brawl Chess <span aria-hidden="true">⚜</span></h1>
   <p class="status" id="status" role="status" aria-live="polite"></p>
   <div class="tray" id="trayTop" aria-label="Captured white pieces"></div>
   <div id="boardwrap">
@@ -125,12 +140,17 @@ button[aria-pressed="true"]{border-color:var(--brass); box-shadow:inset 0 0 0 1p
       <button id="mAI" aria-pressed="true">Vs computer</button>
       <button id="m2P" aria-pressed="false">Two players</button>
     </div>
+    <div class="seg" id="lvlSeg" role="group" aria-label="Difficulty">
+      <button id="lE" aria-pressed="false">Easy</button>
+      <button id="lM" aria-pressed="true">Medium</button>
+      <button id="lH" aria-pressed="false">Hard</button>
+    </div>
     <button id="undo">Undo</button>
     <button id="newg">New game</button>
     <button id="tFight" aria-pressed="true">Fights on</button>
     <button id="tSound" aria-pressed="true">Sound on</button>
   </div>
-  <p class="hint">Tap a piece, then a marked square. Every capture is a fight to the death.</p>
+  <p class="hint">Tap a piece, then a marked square, my liege. Every capture is a fight to the death.</p>
   <p class="copy">&copy; 2026 Bison Digital Marketing. All rights reserved.</p>
 </main>
 
@@ -288,11 +308,15 @@ function search(s, depth, alpha, beta, ply){
   }
   return best;
 }
+let level = 'medium';
+const LV = {easy:{d:0, j:260, rand:.3}, medium:{d:1, j:35, rand:0}, hard:{d:2, j:8, rand:0}};
 function aiPick(){
+  const cfg = LV[level];
+  if (Math.random() < cfg.rand) return G.moves[Math.floor(Math.random() * G.moves.length)];
   const s = G.s, ms = order(s, G.moves.slice());
   let best = ms[0], bv = -Infinity;
   for (const m of ms){
-    const v = -search(apply(s, m), 2, -Infinity, Infinity, 1) + Math.random() * 8;
+    const v = -search(apply(s, m), cfg.d, -Infinity, Infinity, 1) + Math.random() * cfg.j;
     if (v > bv){ bv = v; best = m; }
   }
   return best;
@@ -706,8 +730,18 @@ function setMode(m){
   mode = m;
   $('#mAI').setAttribute('aria-pressed', m === 'ai');
   $('#m2P').setAttribute('aria-pressed', m === '2p');
+  $('#lvlSeg').hidden = m !== 'ai';
   newGame();
 }
+function setLevel(l){
+  level = l;
+  $('#lE').setAttribute('aria-pressed', l === 'easy');
+  $('#lM').setAttribute('aria-pressed', l === 'medium');
+  $('#lH').setAttribute('aria-pressed', l === 'hard');
+}
+$('#lE').onclick = () => setLevel('easy');
+$('#lM').onclick = () => setLevel('medium');
+$('#lH').onclick = () => setLevel('hard');
 $('#mAI').onclick = () => setMode('ai');
 $('#m2P').onclick = () => setMode('2p');
 $('#newg').onclick = () => { if (!busy) newGame(); };
